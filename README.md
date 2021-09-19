@@ -48,7 +48,7 @@ After sourcing `master.R` as above, all of the functions defined by these script
 ### `sonority()`
 
 ## To do
-* [] Re-incorporate CMU pronouncing dictionary
-    * [] `random_word()`
-    * [] `transcribe()`
+* [ ] Re-incorporate CMU pronouncing dictionary
+    * [ ] `random_word()`
+    * [ ] `transcribe()`
 
