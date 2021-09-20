@@ -63,7 +63,7 @@ sonority <- function(str,
 #####################################################
 # Say whether a string of two vowels is a diphthong #
 #####################################################
-is_diphthong <- function(str, diphthongs = english_diphthongs) {
+is_diphthong <- function(str, diphthongs = en_diphthongs) {
     # See if the string is in the list of diphthongs
     value <- str %in% diphthongs
     return(value)
@@ -72,7 +72,7 @@ is_diphthong <- function(str, diphthongs = english_diphthongs) {
 ######################################
 # Find likely diphthongs in a string #
 ######################################
-find_diphthongs <- function(str, diphthongs = english_diphthongs) {
+find_diphthongs <- function(str, diphthongs = en_diphthongs) {
     # Turn into CV string
     cv_structure <- cvify(str)
     # See if there are any two vowels next to ea other
@@ -113,7 +113,7 @@ find_diphthongs <- function(str, diphthongs = english_diphthongs) {
 # Find syllable nuclei in a string #
 ####################################
 assign_nuclei <- function(str,
-                          diphthongs = english_diphthongs,
+                          diphthongs = en_diphthongs,
                           verbose = FALSE) {
     # Make list w/ string & CV structure
     syllables <- list(word = str,
@@ -231,8 +231,7 @@ find_preceding_cs <- function(cv, position) {
 # Evaluate sonority profile for 2-segment onset #
 #################################################
 good_sonority_profile <- function(sonority_profile,
-                                  min_son_diff = english_son_diff,
-                                  exceptions = english_exceptions,
+                                  min_son_diff = en_min_son_diff,
                                   verbose = FALSE) {
     # We need a multi-element vector, so if everything is crammed together,
     # split it up
@@ -244,15 +243,16 @@ good_sonority_profile <- function(sonority_profile,
     # transcription and we need to get their sonority
     if (unique(grepl("\\d", sonority_profile)) != TRUE) {
         sonority_profile <- sonority(sonority_profile, split = TRUE)
-        if (verbose) warning("Segments were provided. The provided string had to be converted to a sonority profile.")
+        if (verbose) warning("Segments were provided and had to be converted to a sonority profile.")
     }
     # Only do the check if the provided profile is longer than 1 element;
     # otherwise, it will be a vacuously good profile
     if (length(sonority_profile) > 1) {
         # Look at the next value and get the difference
-        if (as.numeric(sonority_profile[2]) -
-            as.numeric(sonority_profile[1] >= min_son_diff)) {
+        son_diff <- as.numeric(sonority_profile[2]) - as.numeric(sonority_profile[1])
+        if (son_diff >= min_son_diff) {
             # The profile is good
+            if (verbose) warning(paste0("Sonority difference = ", son_diff))
             is_good <- TRUE
         } else {
             is_good <- FALSE
@@ -272,9 +272,10 @@ good_sonority_profile <- function(sonority_profile,
 # Assign onsets to nuclei #
 ###########################
 assign_onsets <- function(list,
-                          onsets = english_onsets,
-                          banned_onsets = english_banned_onsets,
-                          verbose = FALSE) {
+                          exceptional_onsets = en_exceptional_onsets,
+                          banned_onsets = en_banned_onsets,
+                          verbose = FALSE,
+                          min_son_diff = en_min_son_diff) {
     # Add some elements to the list
     list$onset_text <- NULL
     list$onset_positions <- NULL
@@ -318,11 +319,19 @@ assign_onsets <- function(list,
                     # Make sure the tenative onset isn't in the list of banned onsets
                     if (!(maybe_onset %in% banned_onsets)) {
 
-                        # If not banned, consider how good the sonority profile is
-                        if (good_sonority_profile(maybe_onset)) {
+                        # If not banned, consider how good the sonority profile is or whether the onset is exceptional
+                        sonority_profile_good <- good_sonority_profile(maybe_onset,
+                                                                       min_son_diff)
+                        if (sonority_profile_good | maybe_onset %in% exceptional_onsets) {
 
-                            # If verbose is TRUE, print some details about the onset
-                            if (verbose) warning(paste0("'", maybe_onset, "' has a good sonority profile"))
+                            # If verbose is TRUE, print some details about why parsing succeeded
+                            if (verbose) {
+                                if (sonority_profile_good) {
+                                    warning(paste0("'", maybe_onset, "' has a good sonority profile."))
+                                } else {
+                                    warning(paste0("'", maybe_onset, "' is an exceptional onset."))
+                                }
+                            }
 
                             # If it's good, keep the change to the onset!
                             onset <- maybe_onset
@@ -341,7 +350,7 @@ assign_onsets <- function(list,
                             # Update the onset position with the position of the just-added C
                             if (length(preceding_cs) > 0) syllables$onset_position[current_nucleus] <- preceding_cs[current_consonant]
 
-                        } # If the resulting sonority profile is bad, leave current C unparsed
+                        } # If the profile is bad and the potential onset isn't exceptional, leave current C unparsed
                     } # If the resulting onset is banned, leave current C unparsed
 
                     # Update the counter to check the next C on the next loop
@@ -406,8 +415,8 @@ assign_codas <- function(list) {
 # Parse phonetic transcription into syllables #
 ###############################################
 syllabify <- function(str,
-                      diphthongs = english_diphthongs,
-                      onsets = english_onsets,
+                      diphthongs = en_diphthongs,
+                      onsets = en_onsets,
                       verbose = FALSE) {
 
     # Assign nuclei to the string

@@ -41,7 +41,7 @@ The parser basically uses a strategy taught to undergraduate students of Phonolo
 3. Source `master.R` by running `source(file = "master.R")` in your R terminal.
 
 ## Using the parser (section under construction)
-After sourcing `master.R` as above, all of the functions defined by these scripts are available for use. Some of these functions (namely, `cvify()` and `sonority()`) are mainly used internally. Here is a description of each function:
+After sourcing `0_master.R` as above, all of the functions defined by these scripts are available for use. Some of these functions (namely, `cvify()` and `sonority()`) are mainly used internally. Here is a description of each function:
 
 ### `syllabify()`
 ### `cvify()`
@@ -49,6 +49,8 @@ After sourcing `master.R` as above, all of the functions defined by these script
 
 ## To do
 * [ ] Re-incorporate CMU pronouncing dictionary
-    * [ ] `random_word()`
-    * [ ] `transcribe()`
+    * [ ] `random_word()` function
+    * [ ] `transcribe()` function
+* [ ] Make outputs when `verbose = TRUE` consistent and predictable
+* [ ] Recognize syllabic consonants (e.g. words that end in [ɪzm] should have the [m] assigned to a nucleus)
 

@@ -15,23 +15,19 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # The diphthongs that exist in English
-english_diphthongs <- c("aʊ", "aɪ", "eɪ", "oʊ", "ɔɪ")
+en_diphthongs <- c("aʊ", "aɪ", "eɪ", "oʊ", "ɔɪ")
 
 # Licit onsets
-english_onsets <- c("ʃɹ", "θɹ", "bɹ", "bj", "bl", "dɹ", "dw", "fɹ", "fj",
-                    "fl", "gɹ", "gl", "gw", "hj", "hw", "kɹ", "kj", "kl",
-                    "kw", "mj", "pɹ", "pj", "pl", "sk", "sl", "sm", "sn",
-                    "sp", "st", "sw", "tɹ", "tw")
+en_onsets <- c("ʃɹ", "θɹ", "bɹ", "bj", "bl", "dɹ", "dw", "fɹ", "fj",
+               "fl", "gɹ", "gl", "gw", "hj", "hw", "kɹ", "kj", "kl",
+               "kw", "mj", "pɹ", "pj", "pl", "sk", "sl", "sm", "sn",
+               "sp", "st", "sw", "tɹ", "tw")
 
-# TODO: Make a vector for *exceptional* onsets
+en_exceptional_onsets <- c("st", "sp", "sk")
 
 # These segments can't appear in onsets at all
-english_banned_onsets <- c("ŋ")
-
-# For calculating sonority profiles, are there any consonants that are
-# honorarily a member of a different sonority class?
-english_sonority_exceptions <- c(NULL)
+en_banned_onsets <- c("ŋ")
 
 # The sonority difference between a segment and a preceding consonant must be
 # greater than or equal to this number
-english_son_diff <- 1
+en_min_son_diff <- 1
